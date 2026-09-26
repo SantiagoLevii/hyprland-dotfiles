@@ -1,0 +1,6 @@
+aylurs-gtk-shell
+libastal-git
+libastal-4-git
+libastal-io-git
+libastal-hyprland-git
+libastal-wireplumber-git

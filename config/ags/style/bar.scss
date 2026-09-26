@@ -1,0 +1,222 @@
+@use "sass:list";
+@use "colors" as *;
+
+$bar-height: 46px;
+$radius: 8px;
+$pill-padding: 16px;
+// Medio gap a cada lado de un módulo interno -> 12px entre módulos del pill compartido.
+$shared-gap-half: 6px;
+$loose-gap: 6px;
+$inner-gap: 6px;
+$font-size: 15px;
+$weight-regular: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+$border-width: 1px;
+$launcher-icon-size: 22px;
+// El glifo de Arch tiene el dibujo 1px por encima de su centro de línea; 2px de padding lo bajan 1px.
+$arch-optical-offset: 2px;
+// Hueco medido entre el borde derecho del glifo de Arch y el borde de su cuadrado.
+$arch-glyph-inset: 11px;
+// Debe coincidir con STAT_GROUP_GAP de widget/Stat.tsx.
+$stat-group-gap: 12px;
+// Distancia a cada lado del separador (logo | primer stat).
+$separator-gap: 20px;
+$separator-height: 20px;
+$separator-width: 2px;
+// Aire entre número y unidad / flecha y número.
+$unit-gap: 2px;
+$ws-icon-box: 14px;
+
+// Todo módulo nuevo (incluidos los pills sueltos de la izquierda) se registra acá.
+$all-modules: (launcher-group, workspaces, clock);
+$pill-selectors: ();
+@each $module in $all-modules {
+  $pill-selectors: list.append($pill-selectors, ".#{$module}", $separator: comma);
+}
+
+window.Bar {
+  background: transparent;
+  color: $foreground;
+  // Adwaita Sans (derivada de Inter, ya instalada) para texto; los íconos van aparte en .icon.
+  font-family: "Inter Display", "Adwaita Sans", "JetBrainsMono Nerd Font", "FiraCode Nerd Font", sans-serif;
+  font-size: $font-size;
+  font-weight: $weight-medium;
+  // Cifras de ancho fijo: los números no bailan al cambiar.
+  font-feature-settings: "tnum";
+
+  > centerbox {
+    min-height: $bar-height;
+  }
+}
+
+// El pill (fondo, borde, padding) se define una sola vez para todos los módulos.
+#{$pill-selectors} {
+  background: $background;
+  border-top: $border-width solid $border-subtle;
+  border-bottom: $border-width solid $border-subtle;
+  padding: 0 $pill-padding;
+
+  &:hover {
+    background: $surface-hover;
+  }
+
+  &:active {
+    background: $surface-active;
+  }
+}
+
+.group-loose > * {
+  border-radius: $radius;
+  border-left: $border-width solid $border-subtle;
+  border-right: $border-width solid $border-subtle;
+}
+
+.group-shared {
+  > * {
+    padding-left: $shared-gap-half;
+    padding-right: $shared-gap-half;
+  }
+
+  > :first-child {
+    padding-left: $pill-padding;
+    border-left: $border-width solid $border-subtle;
+    border-top-left-radius: $radius;
+    border-bottom-left-radius: $radius;
+  }
+
+  > :last-child {
+    padding-right: $pill-padding;
+    border-right: $border-width solid $border-subtle;
+    border-top-right-radius: $radius;
+    border-bottom-right-radius: $radius;
+  }
+}
+
+// Variante Propo: el avance del glifo coincide con su dibujo, así el ícono queda centrado.
+.icon {
+  font-family: "JetBrainsMono Nerd Font Propo";
+}
+
+
+.icon-cpu {
+  color: $stat-cpu;
+}
+
+.icon-ram {
+  color: $stat-ram;
+}
+
+.icon-gpu {
+  color: $stat-gpu;
+}
+
+.icon-net-on {
+  color: $stat-net-on;
+}
+
+.icon-net-off {
+  color: $stat-net-off;
+}
+
+.icon-muted {
+  color: $foreground2;
+}
+
+
+
+
+
+.stats-separator {
+  background: $grey;
+  min-width: $separator-width;
+  margin-top: ($bar-height - 2 * $border-width - $separator-height) * 0.5;
+  margin-bottom: ($bar-height - 2 * $border-width - $separator-height) * 0.5;
+  margin-left: $separator-gap - $arch-glyph-inset;
+  margin-right: $separator-gap - $stat-group-gap;
+}
+
+.stat-number {
+  font-weight: $weight-semibold;
+}
+
+.stat-prefix,
+.stat-unit {
+  color: $foreground2;
+  font-weight: $weight-regular;
+}
+
+.stat-unit {
+  margin-left: $unit-gap;
+}
+
+.stat-prefix {
+  margin-right: $unit-gap;
+}
+
+.clock-date {
+  color: $foreground2;
+}
+
+.clock-time {
+  font-weight: $weight-bold;
+}
+
+.separator {
+  color: $grey;
+}
+
+.ws-button {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 $inner-gap;
+  color: $ws-inactive;
+
+  // Hover distinto del activo para no confundirlo con la selección.
+  &:hover {
+    color: $foreground;
+  }
+
+  &.ws-active {
+    color: $ws-active;
+  }
+}
+
+// Misma caja para el fantasma y el punto: si no, el pill queda asimétrico según cuál esté al borde.
+.ws-icon {
+  min-width: $ws-icon-box;
+}
+
+.launcher-group {
+  padding: 0;
+}
+
+// Los botones ya traen $inner-gap de padding: así el primer/último número queda a $pill-padding del borde.
+// Selector con la misma especificidad que .group-shared > :first-child para poder pisarlo.
+.group-shared > .workspaces {
+  padding: 0 ($pill-padding - $inner-gap);
+}
+
+// Cuadrado: el ancho total (con bordes del pill) iguala al alto de la barra.
+.launcher {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  min-height: 0;
+  min-width: $bar-height - 2 * $border-width;
+  padding: 0;
+}
+
+.stats {
+  padding-right: $pill-padding;
+}
+
+.arch-logo {
+  padding-top: $arch-optical-offset;
+  color: $arch-blue;
+  font-size: $launcher-icon-size;
+}

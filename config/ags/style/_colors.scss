@@ -1,0 +1,55 @@
+@use "sass:color";
+@use "sass:math";
+
+// Redondea a canales enteros: dart-sass emite porcentajes fraccionarios tras ajustar lightness.
+@function solid($c) {
+  @return rgb(
+    math.round(color.channel($c, "red", $space: rgb)),
+    math.round(color.channel($c, "green", $space: rgb)),
+    math.round(color.channel($c, "blue", $space: rgb))
+  );
+}
+
+// Paleta base: exactamente 20 colores.
+$background: #1a1a1a;
+$foreground: #e0e0e0;
+$foreground2: #c6c6c6;
+$highlight: #ff2c2c;
+$highlight2: #fab387;
+$bordes: #2c2c2c;
+$bordes2: #3a3a3a;
+$red: #ff2c2c;
+$pink: #ff5588;
+$purple: #7e3ff2;
+$brown: #a65e3b;
+$grey: #5a5a5a;
+$indigo: #4b3b9b;
+$amber: #ff9e3b;
+$orange: #ff6400;
+$green: #7ccf41;
+$yellow: #e0c240;
+$teal: #008080;
+$cyan: #4eb3d3;
+$blue: #5068d8;
+
+// Color de marca, fuera de la paleta de 20: pedido explícito para el logo de Arch.
+$arch-blue: #1793d1;
+
+// Colores de stats: pedido explícito, fuera de la paleta base.
+$stat-cpu: #ff8514;
+$stat-net-on: #3fc433;
+$stat-net-off: #c43333;
+$stat-ram: #7db2de;
+$stat-gpu: #a733c4;
+$ws-active: #f07f22;
+$ws-inactive: #f7bf91;
+
+$ok: $green;
+$alert: $red;
+$warn: $amber;
+$accent: $blue;
+
+$surface-elevated: solid(color.adjust($background, $lightness: 6%));
+$surface-hover: solid(color.adjust($background, $lightness: 10%));
+$surface-active: solid(color.adjust($background, $lightness: 14%));
+$border-subtle: color.change($foreground, $alpha: 0.1);

@@ -1,0 +1,65 @@
+TECNOLOGÍAS DEL ENTORNO (Arch Linux + Hyprland + AGS v3)
+=========================================================
+Versiones exactas de la máquina de referencia: packages/versions.txt
+Origen: [repo] = repos oficiales de pacman, [AUR] = Arch User Repository
+
+SISTEMA
+-------
+Arch Linux                 Distribución base (kernel 7.2.x)
+systemd / timedatectl      Zona America/Argentina/Buenos_Aires, NTP (pendiente activar)
+pipewire + wireplumber     [repo] Audio (wpctl para el volumen)
+
+COMPOSITOR Y SESIÓN
+-------------------
+Hyprland 0.56.2            [repo] Compositor Wayland; configuración en LUA (hyprland.lua)
+                           Layout dwindle tipo Fibonacci + hooks Lua (window.open_early, window.close)
+hyprpaper 0.8.4            [repo] Wallpaper (fit_mode cover)
+hyprpolkitagent 0.2.0      [repo] Agente polkit (diálogos de autenticación)
+dunst 1.13.2               [repo] Notificaciones y OSD de volumen
+libnotify (notify-send)    [repo] Envío de notificaciones desde scripts
+cliphist + wl-clipboard    [repo] Historial de portapapeles / wl-copy, wl-paste
+grim + slurp               [repo] Captura de región -> portapapeles (SUPER+Print)
+playerctl                  [repo] Teclas multimedia
+rofi 2.0.0                 [repo] Lanzador de aplicaciones (drun con íconos, SUPER+|)
+
+BARRA SUPERIOR
+--------------
+AGS v3 (aylurs-gtk-shell) 3.1.2  [AUR] CLI/bundler de la barra (ags run, ags bundle, ags types)
+Astal (libastal-*-git)     [AUR] libastal, libastal-4 (GTK4), libastal-io,
+                           libastal-hyprland (workspaces), libastal-wireplumber
+gnim                       Runtime reactivo JSX de AGS v3 (createState, createBinding, createPoll...)
+GJS 1.88                   [repo] Runtime JavaScript de GNOME (NO Node, NO Bun)
+GTK 4.22 + gtk4-layer-shell [repo] Toolkit + protocolo layer-shell para la barra
+TypeScript / TSX           Lenguaje de los widgets (compilado por el bundler de AGS, esbuild)
+SCSS (dart-sass 1.105)     [repo] Estilos (@use/@forward, sass:color, sass:math, sass:list)
+GLib / Gio                 Lectura de /proc y /sys, reloj monotónico, timeouts
+
+FUENTES
+-------
+Adwaita Sans               [repo adwaita-fonts] Texto de la barra (derivada de Inter)
+JetBrainsMono Nerd Font    [repo ttf-jetbrains-mono-nerd] Íconos (variante Propo) y fallback
+
+APLICACIONES
+------------
+kitty 0.49                 [repo] Terminal (configuración de fábrica)
+thunar                     [repo] Gestor de archivos
+chromium                   [repo] Navegador
+
+FUENTES DE DATOS DE LA BARRA (sin librerías extra)
+--------------------------------------------------
+/proc/stat                 CPU %
+/proc/meminfo              RAM % (MemAvailable)
+/sys/class/drm/cardN/device/gpu_busy_percent   GPU % (amdgpu)
+/sys/class/net/<iface>/statistics/rx_bytes     velocidad de bajada
+/sys/class/net/<iface>/carrier + /proc/net/route + /proc/net/ipv6_route   estado de conexión
+AstalHyprland              workspaces y foco (IPC de Hyprland)
+
+HERRAMIENTAS DE VERIFICACIÓN
+----------------------------
+hyprctl (-j)               Estado de layers, monitores, clientes, binds, opciones
+grim -t ppm + python3      Lectura de píxeles sin PIL/ImageMagick
+tools/vptr.py              Puntero virtual Wayland (zwlr_virtual_pointer_v1) en Python puro
+WAYLAND_DEBUG=client       Traza del protocolo (diagnóstico de enter/leave)
+pango-view                 Render de glifos para elegir íconos
+fc-list / fc-match         Verificar fuentes y codepoints instalados
+jq                         [repo] Filtrado de JSON de hyprctl
